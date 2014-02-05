@@ -1,0 +1,120 @@
+<?php
+/**
+ * Implementa un formulario.
+ */
+function formulario_menu(){
+	$items['formulario'] = array(
+		'title' => 'Ejemplo Formulario WW',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('formulario_nameform'),
+		'access callback' => TRUE,
+		//'type' => MENU_NORMAL_ITEM
+		'type' => MENU_CALLBACK
+		);
+	return $items;
+}
+/**
+*  Definimos un formulario
+*/
+function formulario_nameform(){
+	$form['name'] = array(
+		'#title' => t('Formulario de Datos Personales'),
+		'#type' => 'fieldset',
+		'#description' => t('Los campos con * son obligatorios'),
+		);
+	$form['name']['user_name'] = array(
+		'#title' => t('Nombres'),
+		'#type' => 'textfield',
+		'#defaul'
+		//'#default_value' => "Nombre",
+		'#description' => t('Ingrese su Nombre'),
+		'#required' => TRUE,
+		);
+	$form['name']['apellido'] = array(
+		'#title' => t('Apellidos'),
+		'#type' => 'textfield',
+		'#default_value' => "Apellido",
+		'#description' => t('Ingrese su Apellido'),
+		'#required' => TRUE,
+		);
+	$form['name']['date_nace'] = array(
+		'#title' => t('Fecha de Nacimiento'),
+		'#type' => 'date',
+		'#default_value' => array(
+			'month' => format_date(time(), 'custom', 'n'),
+			'day' => format_date(time(), 'custom', 'j'),
+			'year' => format_date(time(), 'custom', 'Y'),
+			),
+		);
+	$form['name']['email'] = array(
+		'#title' => t('Email'),
+		'#type' => 'textfield',
+		'#default_value' => "ejemplo@email.com",
+		'#description' => t('Ingrese su Email'),
+		'#required' => TRUE,
+		);
+	$form['name']['user'] = array(
+		'#title' => t('usuario'),
+		'#type' => 'textfield',
+		'#default_value' => "usuario",
+		'#description' => t('usuario'),
+		'#required' => TRUE,
+		);	
+	$form['name']['pass'] = array(
+		'#title' => t('password'),
+		'#type' => 'password',
+		'#maxlength' => 60,
+		'#size' => 15,
+		'#required' => TRUE,
+		);
+	$form['ocupacion'] = array(
+		'#title' => t('Ocupacion'),
+		'#type' => 'fieldset',
+		'#collapsible' => TRUE,
+		'#collapsed' => FAlSE
+		);
+	$form['ocupacion_options'] = array(
+		'#type' => 'value',
+		'#value' => array(t('Estudiante'), t('Trabajador Independiente'), t('Otro'))
+		);
+	$form['ocupacion']['select_ocupacion'] = array(
+		'#type' => 'select',
+		'#description' => t('Debe seleccionar una acupacion'),
+		'#options' => $form['ocupacion_options']['#value'],
+		'#empty_option' => 'mi mensaje',
+		);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Entrar'),
+		);
+	return $form;
+}
+/**
+*  Definimos el submit del formulario
+*/
+function formulario_nameform_submit($form, &$form_state){
+	//dpm($form_state);
+	$name = $form_state['values']['user_name'];
+	$apellido = $form_state['values']['apellido'];
+	$ocupacion_key = $form_state['values']['select_ocupacion'];
+	$ocupacion = $form_state['values']['ocupacion_options'][$ocupacion_key];
+	drupal_set_message(t('formulario diligenciado, %name %apellido, %ocupacion',
+		array('%name' => $name, '%apellido' => $apellido, '%ocupacion' => $ocupacion)));	
+}
+/**
+*  Validamos los campos: email, usuario y passsword formulario
+*/
+function formulario_nameform_validate($form, &$form_state){
+  if (!valid_email_address($form_state['values']['email'])) {
+    form_set_error('email', t('e-mail no es valido.'));
+  }
+  if ($form_state['values']['user'] != 'fer') {
+		form_set_error('user', 
+			t('usuario no esta permitido el uso de este formulario'));
+	}
+  if ($form_state['values']['pass'] != 'fer') {
+	    form_set_error('pass', 
+			t('Password incorrecto'));
+	}
+
+}

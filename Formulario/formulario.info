@@ -1,0 +1,5 @@
+name = Formulario Ejemplo WW
+description = "Módulo Formulario Ejemplo"
+package = Aprendiendo a programar con Drupal
+core = 7.x
+files[] = formulario.module

@@ -1,0 +1,83 @@
+<?php
+/**
+ * Implementa un formulario.
+ */
+function formulario_menu(){
+	$items['formulario'] = array(
+		'title' => 'Departamentos de Colombia',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('formulario_nameform'),
+		'access callback' => TRUE,
+		//'type' => MENU_NORMAL_ITEM
+		'type' => MENU_CALLBACK
+		);
+	return $items;
+}
+/**
+*  Definimos un formulario
+*/
+function formulario_nameform(){
+	$form['name'] = array(
+		'#title' => t('Departamentos de Colombia'),
+		'#type' => 'fieldset',
+		'#description' => t('Los campos con * son obligatorios'),
+		);
+	$form['name']['id_depto'] = array(
+		'#title' => t('Codigo Departamento'),
+		'#type' => 'textfield',
+		//'#default_value' => "Nombre",
+		'#description' => t('Ingrese codigo'),
+		'#required' => TRUE,
+		);
+	$form['name']['name_depto'] = array(
+		'#title' => t('Nombre Departamento'),
+		'#type' => 'textfield',
+		'#default_value' => "Departamento",
+		'#description' => t('Ingrese su Apellido'),
+		'#required' => TRUE,
+		);
+	$form['name']['name_cap'] = array(
+		'#title' => t('Capital'),
+		'#type' => 'textfield',
+		'#default_value' => "Capital",
+		'#description' => t('Capital'),
+		'#required' => TRUE,
+		);	
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Entrar'),
+		);
+	return $form;
+}
+/**
+*  Definimos el submit del formulario
+*/
+
+function formulario_nameform_submit($form, &$form_state){
+	//dpm($form_state);
+	
+	$name = $form_state['values']['user_name'];
+	$apellido = $form_state['values']['apellido'];
+	$ocupacion_key = $form_state['values']['select_ocupacion'];
+	$ocupacion = $form_state['values']['ocupacion_options'][$ocupacion_key];
+	drupal_set_message(t('formulario diligenciado, %name %apellido, %ocupacion',
+		array('%name' => $name, '%apellido' => $apellido, '%ocupacion' => $ocupacion)));	
+}
+/**
+*  Validamos los campos: email, usuario y passsword formulario
+*/
+
+function formulario_nameform_validate($form, &$form_state){
+  if (!valid_email_address($form_state['values']['email'])) {
+    form_set_error('email', t('e-mail no es valido.'));
+  }
+  if ($form_state['values']['user'] != 'fer') {
+		form_set_error('user', 
+			t('usuario no esta permitido el uso de este formulario'));
+	}
+  if ($form_state['values']['pass'] != 'fer') {
+	    form_set_error('pass', 
+			t('Password incorrecto'));
+	}
+
+}
